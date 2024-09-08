@@ -21,6 +21,6 @@ class CustomUserChangeForm(forms.ModelForm):
             'profile_picture': forms.FileInput(attrs={'class': 'form-input'}),
         }
 
-
+# No Changes Applied, Using The Built-in Password Change Form 
 class CustomPasswordChangeForm(PasswordChangeForm):
     pass
