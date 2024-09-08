@@ -24,8 +24,12 @@ class BookCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     form_class = BookForm
     template_name = 'book_form.html'
     success_url = reverse_lazy('books:books.list')
-
-    def test_func(self):
+    def test_func(self): 
+        # How Django Handles AC Is important to me , just checking different methods
+        # This method checks if the current user is a staff member.
+        # If the user is a staff member, return True to allow access.
+        # If the user is not a staff member, return False to deny access.
+    
         return self.request.user.is_staff
 
 class BookUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
