@@ -1,0 +1,20 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-md mx-auto bg-white p-8 border border-gray-200 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold mb-6">Confirm Deletion</h2>
+        <p class="mb-4">Are you sure you want to delete the book "{{ object.title }}"?</p>
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Confirm Delete
+                </button>
+                <a href="{% url 'books:books.detail' object.pk %}" class="ml-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

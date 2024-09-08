@@ -1,0 +1,51 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6">Book Catalog</h1>
+    {% if user.is_staff %}
+    <a href="{% url 'books:books.create' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block">Add New Book</a>
+    {% endif %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for book in books %}
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            {% if book.image %}
+                <img src="{{ book.image.url }}" alt="{{ book.title }}" class="w-full h-48 object-cover">
+            {% else %}
+                <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+                    <span class="text-gray-500">No image available</span>
+                </div>
+            {% endif %}
+            <div class="p-4">
+                <h2 class="text-xl font-semibold mb-2">{{ book.title }}</h2>
+                <p class="text-gray-600">By {{ book.author }}</p>
+                <p class="text-gray-600">ISBN: {{ book.isbn }}</p>
+                <p class="text-gray-600">Available: {{ book.available_quantity }} / {{ book.quantity }}</p>
+                <a href="{% url 'books:books.detail' book.pk %}" class="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">View Details</a>
+            </div>
+        </div>
+        {% empty %}
+        <p>No books available.</p>
+        {% endfor %}
+    </div>
+    {% if is_paginated %}
+    <div class="pagination mt-6">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

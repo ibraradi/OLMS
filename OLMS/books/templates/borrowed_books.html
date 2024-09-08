@@ -1,0 +1,77 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6">
+        {% if is_admin %}
+            All Borrowed and Returned Books
+        {% else %}
+            Your Borrowed and Returned Books
+        {% endif %}
+    </h1>
+
+    {% if borrowed_books %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="py-2 px-4 border-b">Book Title</th>
+                        {% if is_admin %}
+                            <th class="py-2 px-4 border-b">Borrowed By</th>
+                        {% endif %}
+                        <th class="py-2 px-4 border-b">Borrowed Date</th>
+                        <th class="py-2 px-4 border-b">Return Date</th>
+                        <th class="py-2 px-4 border-b">Status</th>
+                        {% if not is_admin %}
+                            <th class="py-2 px-4 border-b">Action</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for borrowed in borrowed_books %}
+                        <tr>
+                            <td class="py-2 px-4 border-b">{{ borrowed.book.title }}</td>
+                            {% if is_admin %}
+                                <td class="py-2 px-4 border-b">{{ borrowed.user.username }}</td>
+                            {% endif %}
+                            <td class="py-2 px-4 border-b">{{ borrowed.borrowed_date }}</td>
+                            <td class="py-2 px-4 border-b">{{ borrowed.return_date|default:"Not returned" }}</td>
+                            <td class="py-2 px-4 border-b">{{ borrowed.get_status_display }}</td>
+                            {% if not is_admin %}
+                                <td class="py-2 px-4 border-b">
+                                    {% if borrowed.status == 'borrowed' %}
+                                        <a href="{% url 'books:books.return' borrowed.pk %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">
+                                            Return
+                                        </a>
+                                    {% endif %}
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>No books currently borrowed or returned.</p>
+    {% endif %}
+
+    {% if is_paginated %}
+        <div class="pagination mt-6">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

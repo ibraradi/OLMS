@@ -1,0 +1,36 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-md mx-auto bg-white p-8 border border-gray-200 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold mb-6">{% if form.instance.pk %}Edit{% else %}Add New{% endif %} Book</h2>
+        <form method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            {% for field in form %}
+                <div>
+                    <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700">{{ field.label }}</label>
+                    {% if field.name == 'image' %}
+                        {{ field }}
+                        {% if form.instance.image %}
+                            <p class="mt-2">Current image: {{ form.instance.image.name }}</p>
+                            <img src="{{ form.instance.image.url }}" alt="{{ form.instance.title }}" class="mt-2 max-w-xs">
+                        {% endif %}
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <div>
+                <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    {% if form.instance.pk %}Update{% else %}Create{% endif %} Book
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
