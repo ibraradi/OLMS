@@ -57,7 +57,7 @@ class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
     template_name = 'accounts/password_change.html'
 
 
-
+# Just A different way of handling access control 
 def is_admin(user):
     return user.is_staff
 
