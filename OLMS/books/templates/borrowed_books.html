@@ -1,7 +1,7 @@
 {% extends 'layouts/base.html' %}
 {% block content %}
 <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-6">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">
         {% if is_admin %}
             All Borrowed and Returned Books
         {% else %}
@@ -10,36 +10,45 @@
     </h1>
 
     {% if borrowed_books %}
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto shadow-lg rounded-lg border border-gray-200">
             <table class="min-w-full bg-white">
-                <thead class="bg-gray-100">
+                <thead class="bg-gray-200">
                     <tr>
-                        <th class="py-2 px-4 border-b">Book Title</th>
+                        <th class="py-3 px-6 text-left border-b text-gray-600 font-semibold">Book Title</th>
                         {% if is_admin %}
-                            <th class="py-2 px-4 border-b">Borrowed By</th>
+                            <th class="py-3 px-6 text-left border-b text-gray-600 font-semibold">Borrowed By</th>
                         {% endif %}
-                        <th class="py-2 px-4 border-b">Borrowed Date</th>
-                        <th class="py-2 px-4 border-b">Return Date</th>
-                        <th class="py-2 px-4 border-b">Status</th>
+                        <th class="py-3 px-6 text-left border-b text-gray-600 font-semibold">Borrowed Date</th>
+                        <th class="py-3 px-6 text-left border-b text-gray-600 font-semibold">Return Date</th>
+                        <th class="py-3 px-6 text-left border-b text-gray-600 font-semibold">Status</th>
                         {% if not is_admin %}
-                            <th class="py-2 px-4 border-b">Action</th>
+                            <th class="py-3 px-6 text-left border-b text-gray-600 font-semibold">Action</th>
                         {% endif %}
                     </tr>
                 </thead>
                 <tbody>
                     {% for borrowed in borrowed_books %}
-                        <tr>
-                            <td class="py-2 px-4 border-b">{{ borrowed.book.title }}</td>
+                        <tr class="bg-white hover:bg-gray-100 transition">
+                            <td class="py-3 px-6 border-b">{{ borrowed.book.title }}</td>
                             {% if is_admin %}
-                                <td class="py-2 px-4 border-b">{{ borrowed.user.username }}</td>
+                                <td class="py-3 px-6 border-b">
+                                    <a href="{% url 'accounts.admin_user_profile' borrowed.user.id %}" class="text-blue-500 hover:text-blue-700">
+                                        {{ borrowed.user.username }}
+                                    </a>
+                                </td>
                             {% endif %}
-                            <td class="py-2 px-4 border-b">{{ borrowed.borrowed_date }}</td>
-                            <td class="py-2 px-4 border-b">{{ borrowed.return_date|default:"Not returned" }}</td>
-                            <td class="py-2 px-4 border-b">{{ borrowed.get_status_display }}</td>
+                            <td class="py-3 px-6 border-b">{{ borrowed.borrowed_date|date:"M d, Y" }}</td>
+                            <td class="py-3 px-6 border-b">{{ borrowed.return_date|default:"Not returned" }}</td>
+                            <td class="py-3 px-6 border-b">
+                                <span class="px-2 py-1 inline-flex leading-5 font-semibold rounded-full 
+                                      {% if borrowed.status == 'returned' %} bg-green-100 text-green-800 {% else %} bg-yellow-100 text-yellow-800 {% endif %}">
+                                    {{ borrowed.get_status_display }}
+                                </span>
+                            </td>
                             {% if not is_admin %}
-                                <td class="py-2 px-4 border-b">
+                                <td class="py-3 px-6 border-b">
                                     {% if borrowed.status == 'borrowed' %}
-                                        <a href="{% url 'books:books.return' borrowed.pk %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">
+                                        <a href="{% url 'books:books.return' borrowed.pk %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                             Return
                                         </a>
                                     {% endif %}
@@ -51,26 +60,26 @@
             </table>
         </div>
     {% else %}
-        <p>No books currently borrowed or returned.</p>
+        <p class="text-center text-gray-600 mt-6">No books currently borrowed or returned.</p>
     {% endif %}
 
     {% if is_paginated %}
-        <div class="pagination mt-6">
-            <span class="step-links">
+        <div class="mt-6 flex justify-center">
+            <div class="inline-flex items-center">
                 {% if page_obj.has_previous %}
-                    <a href="?page=1">&laquo; first</a>
-                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                    <a href="?page=1" class="py-2 px-3 text-gray-500 hover:text-gray-700">&laquo; first</a>
+                    <a href="?page={{ page_obj.previous_page_number }}" class="py-2 px-3 text-gray-500 hover:text-gray-700">previous</a>
                 {% endif %}
 
-                <span class="current">
+                <span class="py-2 px-3 text-gray-600">
                     Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
                 </span>
 
                 {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}">next</a>
-                    <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                    <a href="?page={{ page_obj.next_page_number }}" class="py-2 px-3 text-gray-500 hover:text-gray-700">next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}" class="py-2 px-3 text-gray-500 hover:text-gray-700">last &raquo;</a>
                 {% endif %}
-            </span>
+            </div>
         </div>
     {% endif %}
 </div>

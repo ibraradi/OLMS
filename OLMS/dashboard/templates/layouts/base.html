@@ -7,6 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        /* Profile Section */
         .profile-picture {
             @apply h-48 w-48 rounded-full mx-auto mb-4 border-4 border-white shadow-lg object-cover;
         }
@@ -38,12 +43,8 @@
         .profile-button-secondary {
             @apply bg-gray-200 hover:bg-gray-300 text-gray-800;
         }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-        /* Custom CSS */
 
+        /* Form Styles */
         .form-input {
             @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition duration-150 ease-in-out;
         }
@@ -63,40 +64,54 @@
         .card {
             @apply bg-white shadow-md rounded-lg p-6;
         }
-        
-        /* New styles for form inputs */
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        input[type="file"] {
-            @apply form-input;
-        }
-        
-        /* Style for form errors */
+
+        /* Error Styles */
         .error-message {
             @apply mt-1 text-sm text-red-600;
         }
-        
-        /* Style for icons in labels */
-        .form-icon {
-            @apply text-indigo-500 mr-2;
+
+        /* Message Styles */
+        .message {
+            @apply bg-opacity-10 border-l-4 p-4 rounded-md shadow-sm mb-4;
         }
+
+        .message-success {
+            @apply bg-green-100 border-green-500 text-green-700;
+        }
+
+        .message-error {
+            @apply bg-red-100 border-red-500 text-red-700;
+        }
+
+        /* Sticky footer for short pages */
+        .min-h-screen {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .flex-grow {
+            flex-grow: 1;
+        }
+
     </style>
     {% block extra_head %}{% endblock %}
 </head>
 <body class="flex flex-col min-h-screen bg-gray-50">
+    <!-- Header Section -->
     <header class="bg-indigo-700 text-white shadow-lg">
         <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
             <a href="/" class="text-2xl font-bold text-white hover:text-indigo-200 transition duration-300">LMS</a>
             <div class="space-x-6">
+                <a href="{% url 'books:books.list' %}" class="hover:text-blue-200">All Books</a> <!-- New link for book list -->
                 {% if user.is_authenticated %}
                     <a href="{% url 'books:books.borrowed' %}" class="hover:text-blue-200">
                         {% if user.is_staff %}All Borrowed Books{% else %}Your Borrowed Books{% endif %}
                     </a>
                     <a href="{% url 'accounts.profile' %}" class="hover:text-indigo-200 transition duration-300">Profile</a>
                     {% if user.is_staff %}
-    <a href="{% url 'accounts.admin_user_list' %}" class="hover:text-blue-200">Manage Users</a>
-{% endif %}
+                        <a href="{% url 'accounts.admin_user_list' %}" class="hover:text-blue-200">Manage Users</a>
+                    {% endif %}
                     <a href="{% url 'accounts.logout' %}" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-full transition duration-300">Logout</a>
                 {% else %}
                     <a href="{% url 'accounts.login' %}" class="hover:text-indigo-200 transition duration-300">Login</a>
@@ -105,13 +120,15 @@
             </div>
         </nav>
     </header>
+    
 
+    <!-- Main Content Section -->
     <main class="container mx-auto px-4 py-8 flex-grow">
         {% if messages %}
             <div class="messages mb-8">
                 {% for message in messages %}
-                    <div class="bg-{{ message.tags }}-100 border border-{{ message.tags }}-400 text-{{ message.tags }}-700 px-4 py-3 rounded-lg shadow-md" role="alert">
-                        <span class="block sm:inline">{{ message }}</span>
+                    <div class="message message-{{ message.tags }}">
+                        <span>{{ message }}</span>
                     </div>
                 {% endfor %}
             </div>
@@ -120,12 +137,11 @@
         {% block content %}{% endblock %}
     </main>
 
+    <!-- Footer Section -->
     <footer class="bg-gray-800 text-white text-center p-6 mt-8">
         <p>&copy; {% now "Y" %} Library Management System. All rights reserved.</p>
     </footer>
 
     {% block extra_body %}{% endblock %}
-
-
 </body>
 </html>
